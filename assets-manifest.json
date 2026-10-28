@@ -1,0 +1,35 @@
+{
+  "model": {
+    "url": "https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task",
+    "version": "float16/1",
+    "sha256": "97952348cf6a6a4915c2ea1496b4b37ebabc50cbbf80571435643c455f2b0482",
+    "license": "Apache-2.0"
+  },
+  "images": [
+    {
+      "file": "alpine.jpg",
+      "source": "https://images.unsplash.com/photo-1470770841072-f978cf4d019e",
+      "sha256": "273a824ad2aeeecec60fc842dafb2231ba963cdba00c0877c386cd76c370d9a0"
+    },
+    {
+      "file": "forest.jpg",
+      "source": "https://images.unsplash.com/photo-1448375240586-882707db888b",
+      "sha256": "2ce928c15215a055beb73c75c62d2cf5b1cc9a6cdb1b13e0d53a127893f347e8"
+    },
+    {
+      "file": "coast.jpg",
+      "source": "https://images.unsplash.com/photo-1473116763249-2faaef81ccda",
+      "sha256": "92f467d543b6a28fe038f41977e2e8c23409f3998be0fdabe29d343337767e92"
+    },
+    {
+      "file": "desert.jpg",
+      "source": "https://images.unsplash.com/photo-1509316785289-025f5b846b35",
+      "sha256": "f4541021b58af358a656ad3eccb1c4e8c75e5e6bc62c6bbd380605784635f6c3"
+    },
+    {
+      "file": "mountain.jpg",
+      "source": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b",
+      "sha256": "6792c574c55c70a47911772d9fae3c9e8f6d94bd9e3f5d00177f93db9677232b"
+    }
+  ]
+}

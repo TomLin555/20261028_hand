@@ -1,0 +1,19 @@
+{
+  "name": "gesture-detection",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "手勢控制圖片播放器：攝影機辨識、圖片展示與本機匯入",
+  "scripts": {
+    "dev": "uv run pro03",
+    "prepare-assets": "python scripts/prepare_assets.py",
+    "test": "node --test tests/gestures.test.js tests/effects.test.js",
+    "test:browser": "playwright test"
+  },
+  "dependencies": {
+    "@mediapipe/tasks-vision": "1.2.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1"
+  }
+}

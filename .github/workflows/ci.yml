@@ -1,0 +1,49 @@
+name: Project checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version-file: .python-version
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - name: Set up Node.js for tests
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Set up uv for lockfile checks and the test server
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          version: '0.13.3'
+      - name: Reproduce the Render build
+        run: python scripts/build_render.py
+      - name: Verify lockfile and exported requirements
+        run: |
+          uv lock --check
+          uv export --locked --no-dev --no-emit-project --format requirements.txt --output-file requirements.txt
+          git diff --exit-code -- requirements.txt
+      - name: Install frontend test dependencies
+        run: npm ci
+      - name: Install test browser
+        run: npx playwright install --with-deps chromium
+      - name: Test gesture logic
+        run: npm test
+      - name: Test browser interactions and model loading
+        run: npm run test:browser

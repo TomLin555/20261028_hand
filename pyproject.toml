@@ -1,0 +1,17 @@
+[project]
+name = "pro03"
+version = "0.1.0"
+description = "手勢圖片播放器：瀏覽器端 MediaPipe 辨識與可部署於 Render 的 Python 服務"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi==0.162.0",
+    "uvicorn==0.54.0",
+]
+
+[project.scripts]
+pro03 = "pro03:main"
+
+[build-system]
+requires = ["uv_build>=0.13.3,<0.14.0"]
+build-backend = "uv_build"

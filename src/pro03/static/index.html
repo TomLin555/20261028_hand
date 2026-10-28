@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f6f5f1">
+  <meta name="description" content="用手勢探索照片：左右移動手掌切換圖片，食指回到第一張，小指前往最後一張。">
+  <title>手勢映畫 · Gesture Gallery</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script type="module" src="/static/app.js"></script>
+</head>
+<body>
+  <header class="topbar wrap">
+    <a class="brand" href="/" aria-label="手勢映畫首頁"><span class="brand-mark" aria-hidden="true">G<span>↗</span></span><span>手勢映畫<small>GESTURE GALLERY</small></span></a>
+    <span class="local-badge"><i></i> 影像只在你的裝置處理</span>
+  </header>
+  <main class="wrap">
+    <section class="intro">
+      <div><p class="eyebrow">A LITTLE MOVEMENT, A NEW PERSPECTIVE</p><h1>揮揮手，換個風景<span>。</span></h1><p class="subtitle">讓手掌成為遙控器，用最自然的方式，翻閱每一個瞬間。</p></div>
+      <div class="intro-note"><span>01 — 05</span><p>從眼前出發<br>讓風景流動</p></div>
+    </section>
+    <div class="workspace">
+      <section class="panel camera-panel" aria-labelledby="camera-heading">
+        <div class="panel-heading"><h2 id="camera-heading"><span class="section-number">01</span> 手勢感應區</h2><span id="camera-status" class="status"><i></i> 尚未啟動</span></div>
+        <div class="camera-stage" id="camera-stage">
+          <video id="camera" autoplay playsinline muted aria-label="鏡像攝影機畫面" hidden></video>
+          <canvas id="landmarks" aria-hidden="true" hidden></canvas>
+          <div class="camera-placeholder" id="camera-placeholder">
+            <div class="hand-orbit" aria-hidden="true"><svg viewBox="0 0 100 110" fill="none"><path d="M31 56V29a6 6 0 0 1 12 0v22-34a6 6 0 0 1 12 0v34-28a6 6 0 0 1 12 0v32-22a6 6 0 0 1 12 0v38c0 22-12 34-29 34-12 0-20-8-25-18L13 65c-4-8 5-14 11-8l7 8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="m9 28-5-4M20 15l-1-6M88 13l5-4" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></div>
+            <h3>準備好，向鏡頭揮個手</h3><p>開啟攝影機，開始你的手勢之旅</p>
+          </div>
+          <span class="view-label">MIRRORED VIEW</span><span class="camera-corner" aria-hidden="true">⌜</span>
+        </div>
+        <div class="camera-feedback"><span class="feedback-dot" id="feedback-dot"></span><p id="gesture-feedback" role="status" aria-live="polite">等待啟動攝影機</p><span id="gesture-confidence"></span></div>
+        <button class="camera-button" id="camera-toggle" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="3"/><path d="m16 10 5-3v10l-5-3"/></svg><span>開啟攝影機</span></button>
+        <p class="privacy-note" id="camera-help">需允許攝影機權限；影像不會上傳或儲存。</p>
+      </section>
+
+      <section class="panel gallery-panel" aria-labelledby="gallery-heading">
+        <div class="panel-heading"><h2 id="gallery-heading"><span class="section-number">02</span> 圖片放映室</h2><label class="import-button" for="image-files"><span aria-hidden="true">＋</span> 匯入圖片</label><input type="file" id="image-files" accept="image/*" multiple class="sr-only"></div>
+        <div class="photo-stage" id="photo-stage"><img id="gallery-image" src="/static/images/alpine.jpg" alt="山峰與湖泊的風景" fetchpriority="high"><canvas id="gallery-mosaic" aria-hidden="true" hidden></canvas><div class="photo-shade"></div><div class="photo-caption"><span id="photo-category">THE QUIET COLLECTION</span><h3 id="photo-title">山湖之間</h3><p id="photo-description">把日常留在身後，把寧靜放在眼前。</p></div><span class="photo-counter" id="photo-counter">01 / 05</span><p id="image-error" hidden>這張圖片無法載入，請切換或重新匯入。</p></div>
+        <div class="gallery-controls" role="group" aria-label="圖片播放控制">
+          <button type="button" id="first" title="第一張（Home）" aria-label="第一張"><span aria-hidden="true">|←</span><small>第一張</small></button>
+          <button type="button" id="previous" title="上一張（←）" aria-label="上一張"><span aria-hidden="true">←</span><small>上一張</small></button>
+          <div class="gallery-progress"><span id="current-number">01</span><div class="progress-track"><div id="progress-fill"></div></div><span id="total-number">05</span></div>
+          <button type="button" id="next" title="下一張（→）" aria-label="下一張"><span aria-hidden="true">→</span><small>下一張</small></button>
+          <button type="button" id="last" title="最後一張（End）" aria-label="最後一張"><span aria-hidden="true">→|</span><small>最後一張</small></button>
+        </div>
+        <div class="thumbnails" id="thumbnails" role="group" aria-label="選擇圖片"></div>
+        <div class="flip-controls" role="group" aria-label="圖片翻轉控制">
+          <button type="button" id="flip-horizontal" aria-pressed="false">↔ 左右翻轉</button>
+          <button type="button" id="flip-vertical" aria-pressed="false">↕ 上下翻轉</button>
+          <button type="button" id="reset-orientation" disabled>還原方向</button>
+          <span id="orientation-status" role="status">原始方向</span>
+        </div>
+        <div class="effect-controls" role="group" aria-label="馬賽克及縮放控制">
+          <button type="button" id="toggle-mosaic" aria-pressed="false">▦ 馬賽克</button>
+          <div class="zoom-controls" role="group" aria-label="圖片縮放">
+            <button type="button" id="zoom-out" aria-label="縮小圖片">−</button>
+            <output id="zoom-level" aria-label="目前縮放比例" aria-live="polite">100%</output>
+            <button type="button" id="zoom-in" aria-label="放大圖片">＋</button>
+          </div>
+          <button type="button" id="reset-zoom">原始大小</button>
+        </div>
+        <div class="gallery-footer"><p id="gallery-message" role="status" aria-live="polite">也可以使用鍵盤 ← → 切換圖片</p><button id="restore-demo" type="button" hidden>回到示範圖片</button></div>
+      </section>
+    </div>
+    <section class="gesture-guide" aria-labelledby="guide-heading">
+      <div class="guide-title"><p class="eyebrow">YOUR HAND, YOUR REMOTE</p><h2 id="guide-heading">四個動作，輕鬆掌握</h2><p>手掌朝向鏡頭，保持在畫面內</p></div>
+      <div class="gesture-card"><span class="gesture-symbol" aria-hidden="true">←</span><div><h3>手掌向左移</h3><p>上一張圖片</p></div><span class="gesture-key">01</span></div>
+      <div class="gesture-card"><span class="gesture-symbol" aria-hidden="true">→</span><div><h3>手掌向右移</h3><p>下一張圖片</p></div><span class="gesture-key">02</span></div>
+      <div class="gesture-card"><span class="gesture-symbol finger" aria-hidden="true">☝</span><div><h3>只伸出食指</h3><p>回到第一張 · 停留半秒</p></div><span class="gesture-key">03</span></div>
+      <div class="gesture-card"><svg class="pinky-icon" viewBox="0 0 40 44" fill="none" aria-hidden="true"><path d="M10 24V10a3 3 0 0 1 6 0v12c0-5 6-5 6 0 0-5 6-5 6 0 0-4 6-4 6 0v9c0 7-5 11-12 11-5 0-8-2-11-6l-6-8c-2-4 2-7 5-4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" transform="translate(40 0) scale(-1 1)"/></svg><div><h3>只伸出小指</h3><p>前往最後一張 · 停留半秒</p></div><span class="gesture-key">04</span></div>
+    </section>
+    <section class="interaction-guide" aria-labelledby="interaction-heading">
+      <div><p class="eyebrow">TURN & CLAP</p><h2 id="interaction-heading">翻個手，拍個手，風景換個角度</h2></div>
+      <div><h3>↔ 手心／手背翻面</h3><p>單手張開，先停留，再經側面翻到另一面並停留片刻，圖片左右翻轉。</p></div>
+      <div><h3>↕ 雙手拍手</h3><p>雙手先分開，再於畫面中央合掌，圖片上下翻轉。不需開啟麥克風。</p></div>
+      <div><h3>▦ 手掌往下折</h3><p>單手張開朝上，手腕保持原位，將手掌向下彎折並停留，切換馬賽克。</p></div>
+      <div><h3>⌕ 拇指與食指開合</h3><p>收起其餘三指，拇指與食指由張開到捏合縮小、由捏合到分開放大。</p></div>
+      <p class="interaction-note">翻轉與馬賽克重做一次即可還原；指尖每完成一次開合縮放一級（50%～200%），放鬆手指後可繼續切圖。每張圖片各自保留效果，也可使用上方按鈕操作。</p>
+    </section>
+    <p class="gesture-tip">小提醒：以左側鏡像畫面的左右為準。完成動作後，放鬆手指再做下一次；每次操作間隔約一秒。</p>
+  </main>
+  <footer class="wrap page-footer"><span>GESTURE GALLERY <span class="footer-divider">/</span> 手勢映畫</span><span>每一個動作，都開啟一段風景。</span></footer>
+</body>
+</html>
